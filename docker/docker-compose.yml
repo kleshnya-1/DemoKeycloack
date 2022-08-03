@@ -1,0 +1,31 @@
+version: '3.3'
+
+services:
+  postgres:
+    image: postgres:14
+    container_name: food-postgres
+    restart: always
+    environment:
+      POSTGRES_DB: food-keycloak
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: pass
+    ports:
+      - 5432:5432
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:15.0.2
+    container_name: food-keycloak
+    restart: always
+    command: [ "-Djboss.http.port=8081" ]
+    environment:
+      DB_VENDOR: postgres
+      DB_ADDR: postgres
+      DB_DATABASE: food-keycloak
+      DB_USER: postgres
+      DB_PASSWORD: pass
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: admin
+    ports:
+      - "8081:8081"
+    depends_on:
+      - postgres
